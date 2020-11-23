@@ -34,6 +34,10 @@ func transactionSignCmd() gcli.Command {
 				Name:  "inputIndex",
 				Usage: "Index of the input in the wallet",
 			},
+			gcli.Int64SliceFlag{
+				Name:  "utxoValue",
+				Usage: "UTXO value of input",
+			},
 			gcli.StringSliceFlag{
 				Name:  "outputAddress",
 				Usage: "Addresses of the output for the transaction",
@@ -67,6 +71,7 @@ func transactionSignCmd() gcli.Command {
 			inputs := c.StringSlice("inputHash")
 			prevHash := c.StringSlice("prevHash")
 			inputIndex := c.IntSlice("inputIndex")
+			utxoValue := c.Int64Slice("utxoValue")
 			outputs := c.StringSlice("outputAddress")
 			coins := c.Int64Slice("coin")
 			hours := c.Int64Slice("hour")
@@ -112,7 +117,7 @@ func transactionSignCmd() gcli.Command {
 					log.Error(err)
 				}
 			case skyWallet.BitcoinCoinType:
-				err = transactionBitcoinSign(device, prevHash, outputs, coins, inputIndex, addressIndex)
+				err = transactionBitcoinSign(device, prevHash, outputs, utxoValue, coins, inputIndex, addressIndex)
 				if err != nil {
 					log.Error(err)
 				}
@@ -164,7 +169,7 @@ func transactionSkycoinSign(device *skyWallet.Device, inputs, outputs []string, 
 	return err
 }
 
-func transactionBitcoinSign(device *skyWallet.Device, prevHashes, outputs []string, coins []int64, inputIndex, addressIndex []int) error {
+func transactionBitcoinSign(device *skyWallet.Device, prevHashes, outputs []string, utxoValue, coins []int64, inputIndex, addressIndex []int) error {
 	if len(prevHashes) != len(inputIndex) {
 		return fmt.Errorf("Every given input index should have a hash of previous the tx")
 	}
@@ -179,6 +184,8 @@ func transactionBitcoinSign(device *skyWallet.Device, prevHashes, outputs []stri
 			return err
 		}
 		transactionInput.PrevHash = decoded
+		transactionInput.Index = proto.Uint32(uint32(inputIndex[i]))
+		transactionInput.Value = proto.Uint64(uint64(utxoValue[i]))
 		transactionInputs = append(transactionInputs, &transactionInput)
 	}
 	for i, output := range outputs {
