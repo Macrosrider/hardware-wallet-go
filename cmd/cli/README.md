@@ -183,7 +183,7 @@ OPTIONS:
         --addressN value            Number of addresses to generate (default: 1)
         --startIndex value          Start to generate deterministic addresses from startIndex (default: 0)
         --confirmAddress            If requesting one address it will be sent only if user confirms operation by pressing device's button.
-        --coinType                  Coin Type, which will be used on hardware-wallet. Supported values: SKY, BTC (default: SKY)) 
+        --coinType                  Coin Type, which will be used on hardware-wallet. Supported values: SKY, BTC (default: SKY))
 ```
 
 #### Examples
@@ -538,15 +538,19 @@ OPTIONS:
         --inputHash value                   Hash of the Input of the transaction we expect the device to sign
         --prevHash value                    Hash of the previous transaction we expect the device to sign (for BTC)
         --inputIndex value                  Index of the input in the wallet
+        --utxoValue  value                  UTXO value of previous transaction
         --outputAddress string              Addresses of the output for the transaction
         --coin value                        Amount of coins
         --hour value                        Number of hours
         --addressIndex value                If the address is a return address tell its index in the wallet
-        --coinType                          Coin Type, which will be used on hardware-wallet. Supported values: SKY, BTC (default: SKY)) 
+        --coinType                          Coin Type, which will be used on hardware-wallet. Supported values: SKY, BTC (default: SKY))
 ```
 
+#### Examples
+##### Skycoin transaction signing example
+
 ```bash
-$ skycoin-hw-cli transactionSign --inputHash a885343cc57aedaab56ad88d860f2bd436289b0248d1adc55bcfa0d9b9b807c3 --inputIndex=0 --outputAddress=zC8GAQGQBfwk7vtTxVoRG7iMperHNuyYPs --coin=1000000 --hour=1
+$ skycoin-hw-cli transactionSign --inputHash a885343cc57aedaab56ad88d860f2bd436289b0248d1adc55bcfa0d9b9b807c3 --inputIndex=0 --outputAddress=zC8GAQGQBfwk7vtTxVoRG7iMperHNuyYPs --coin=1000000 --hour=1 --coinType=SKY
 ```
 
 <details>
@@ -555,6 +559,20 @@ $ skycoin-hw-cli transactionSign --inputHash a885343cc57aedaab56ad88d860f2bd4362
 ```
 [a885343cc57aedaab56ad88d860f2bd436289b0248d1adc55bcfa0d9b9b807c3] [0]
 [zC8GAQGQBfwk7vtTxVoRG7iMperHNuyYPs] [1000000] [1] []
+```
+</details>
+
+##### Bitcoin transaction signing example (Testnet) with several outputs
+
+```bash
+$ skycoin-hw-cli transactionSign --prevHash dec6c7e07b66e88053a721dba3e5a379766ba70dd11f654b053dd6b2b28d37c4 --inputIndex=1 --utxoValue=100000 --outputAddress=mvQrmmzFroQS9Z6vZ8J4YGBjGWuACbiQ72 --outputAddress=mhQftxKfYHD22MVFheUyRtoMq3RAjNcXuy --coin=80000 --coin=10000 --coinType=BTC
+```
+
+<details>
+ <summary>View Output</summary>
+
+```
+[43fac90f5974b4e9b4c60078ea4cf389d2c1c224cff57963770ee9380652987a6136c189b18ff43ad9d93e5dad8a78971190d988c85911e93d40608a73c97e0c01]
 ```
 </details>
 
